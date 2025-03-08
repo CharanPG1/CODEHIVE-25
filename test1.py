@@ -88,6 +88,74 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(db_user)
     return {"message": "User registered successfully"}
+@app.get("/users/register/", response_class=HTMLResponse)
+def reg():
+    return '''<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log In - QNote</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+  <div class="flex flex-col justify-center items-center min-h-screen">
+    <!-- Logo -->
+    <div class="mb-6">
+        <img src="\assets\logobg.png" class="w-48 h-auto" alt="logo">
+    </div>
+
+    <!-- Log-In Form -->
+    <div class="bg-white shadow-md rounded-lg w-full max-w-md p-6">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">Log In to Your Account</h2>
+      <form action="#" method="POST" class="space-y-4">
+        <!-- Email -->
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            required
+            class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500"
+            placeholder="Enter your email"
+          />
+        </div>
+
+        <!-- Password -->
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            required
+            class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500"
+            placeholder="Enter your password"
+          />
+        </div>
+
+        <!-- Submit Button -->
+        <div>
+          <button
+            type="submit"
+            class="w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+          >
+            Log In
+          </button>
+        </div>
+      </form>
+
+      <!-- Don't have an account? -->
+      <p class="mt-4 text-sm text-gray-800">
+        Don't have an account?
+        <a href="\frontend\signUp\signup.html" class="text-purple-500 hover:underline"> <strong>Sign up</strong></a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>
+'''
 
 # Login
 @app.post("/users/login/")
@@ -96,6 +164,7 @@ def login(user: LoginRequest, db: Session = Depends(get_db)):
     if not db_user or not pwd_context.verify(user.password, db_user.password_hash):
         raise HTTPException(status_code=401, detail="Invalid Credentials")
     return {"token": create_token(user.username)}
+
 
 # Report an Incident (🔒 Protected)
 @app.post("/incidents/report/")
@@ -116,7 +185,18 @@ def view_incidents(db: Session = Depends(get_db), username: str = Depends(verify
 @app.get("/", response_class=HTMLResponse)
 async def root():
     return '''
-    <html>
-        <h1>Welcome to Cybersecurity Incident System</h1>
-    </html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex items-center justify-center h-screen bg-gray-100">
+    <button class="px-6 py-3 mt-4 text-sm text-gray-800 bg-blue-500 rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">
+        Login
+    </button>
+</body>
+</html>
+
     '''
